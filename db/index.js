@@ -5,9 +5,9 @@ const faker = require("faker");
 const random = require("generate-random-data");
 
 const productsToSeed = [
-  { name: faker.commerce.productName() },
-  { name: faker.commerce.productName() },
-  { name: faker.commerce.productName() }
+  { name: random.lastName() },
+  { name: random.lastName() },
+  { name: random.lastName() }
 ];
 
 const catagoriesToSeed = [
@@ -19,7 +19,6 @@ const catagoriesToSeed = [
 const sync = () => {
   return conn.sync({ force: true });
 };
-
 const seed = () => {
   return Promise.all(
     catagoriesToSeed.map(category => {
@@ -28,12 +27,17 @@ const seed = () => {
   ).then(() =>
     Promise.all(
       productsToSeed.map(product => {
-        Product.create(product);
+        Product.create(product).then(product => {
+          Category.findAll().then(categories =>
+            product.setCategory(
+              Math.floor(Math.random() * categories.length) + 1
+            )
+          );
+        });
       })
     )
   );
 };
-
 Product.belongsTo(Category, { onDelete: "cascade" });
 Category.hasMany(Product);
 

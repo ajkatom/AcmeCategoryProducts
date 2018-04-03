@@ -5,15 +5,19 @@ const { Product, Category } = db.models;
 
 router.get("/", (req, res, next) => {
   Product.findAll()
-    .then(products => {
-      products.map(product => {
-        Category.findAll().then(categories =>
-          product.setCategory(Math.floor(Math.random() * categories.length) + 1)
-        );
-      });
+    .then(products => res.send(products))
+    .catch(next);
+});
+router.post("/", (req, res, next) => {
+  Product.create(req.body)
+    .then(products => res.send(products))
+    .catch(next);
+});
 
-      res.send(products);
-    })
+router.delete("/:id", (req, res, next) => {
+  Product.findById(req.params.id)
+    .then(product => product.destroy())
+    .then(() => res.sendStatus(204))
     .catch(next);
 });
 

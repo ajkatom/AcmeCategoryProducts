@@ -3,7 +3,6 @@ const app = express();
 const db = require("./db");
 const path = require("path");
 const port = process.env.PORT || 3000;
-//const { Category } = db.models;
 app.use(require("body-parser").json());
 
 app.use("/dist", express.static(path.join(__dirname, "dist")));

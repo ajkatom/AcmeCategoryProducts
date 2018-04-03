@@ -50,6 +50,46 @@ const createCategory = () => {
       });
   };
 };
+const deleteCategory = id => {
+  return dispatch => {
+    return axios
+      .delete(`/api/categories/${id}`)
+      .then(res => res.data)
+      .then(category => {
+        dispatch({
+          type: DELETE_CATEGTORY,
+          id
+        });
+      });
+  };
+};
+const createProduct = id => {
+  return dispatch => {
+    return axios
+      .post("/api/products/", { name: random.lastName(), categoryId: id })
+      .then(res => res.data)
+      .then(product => {
+        dispatch({
+          type: CREATE_PRODUCT,
+          product
+        });
+      });
+  };
+};
+const deleteProduct = id => {
+  return dispatch => {
+    return axios
+      .delete(`/api/products/${id}`)
+      .then(res => res.data)
+      .then(product => console.log(product))
+      .then(() => {
+        dispatch({
+          type: DELETE_PRODUCT,
+          id
+        });
+      });
+  };
+};
 
 const categoryReducer = (state = [], action) => {
   switch (action.type) {
@@ -60,7 +100,7 @@ const categoryReducer = (state = [], action) => {
       state = [...state, action.category];
       break;
     case DELETE_CATEGTORY:
-      state = state.filter(state.id !== action.id);
+      state = state.filter(category => category.id !== action.id * 1);
       break;
   }
   return state;
@@ -73,8 +113,11 @@ const productReducer = (state = [], action) => {
       break;
     case CREATE_PRODUCT:
       state = [...state, action.product];
+    case DELETE_CATEGTORY:
+      state = state.filter(product => product.categoryId !== action.id * 1);
+      break;
     case DELETE_PRODUCT:
-      state = state.filter(state.id !== action.id);
+      state = state.filter(product => product.id !== action.id * 1);
       break;
   }
   return state;
@@ -88,4 +131,11 @@ const reducer = combineReducers({
 const store = createStore(reducer, applyMiddleware(thunk));
 
 export default store;
-export { listCategories, listProducts, createCategory };
+export {
+  listCategories,
+  listProducts,
+  createCategory,
+  deleteCategory,
+  createProduct,
+  deleteProduct
+};
