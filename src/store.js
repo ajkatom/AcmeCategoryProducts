@@ -77,6 +77,7 @@ const createProduct = id => {
   };
 };
 const deleteProduct = id => {
+  console.log(id);
   return dispatch => {
     return axios
       .delete(`/api/products/${id}`)
